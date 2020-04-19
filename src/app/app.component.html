@@ -5,7 +5,7 @@
   </mat-toolbar-row>
 </mat-toolbar>
 
-<div class="container">
+<div class="container" style="padding: 20px 0;">
 
   <mat-card>
 
@@ -14,11 +14,32 @@
       <div class="col-md-7">
         <div class="row">
 
-          <div class="col-md-6">
-            <button mat-raised-button color="primary">Primary</button>
+          <div *ngFor=" let slot of parking_slots" class="col-md-6" style="margin:5px 0">
+            <button mat-raised-button 
+              [ngClass]="{'green': slot['is_available'] == '1','red': slot['is_available'] == '0'}"  
+              class="btn-slot"
+              (click) = "select_slot(slot)"
+            >
+                {{slot['name']}}
+              </button>
           </div>
 
         </div>
+      </div>
+
+      <div class="col-md-5">
+
+        <mat-card *ngIf="selected_slot">
+            <mat-card-header>
+              <mat-card-title>{{selected_slot['name']}}</mat-card-title>
+              <mat-card-subtitle>{{selected_slot['division']}}</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+              
+            </mat-card-content>
+        </mat-card>
+
       </div>
 
     </div>
