@@ -11,23 +11,40 @@
 
     <div class="row">
 
-      <div class="col-md-7">
+      <div class="col-md-6">
         <div class="row">
 
           <div *ngFor=" let slot of parking_slots" class="col-md-6" style="margin:5px 0">
-            <button mat-raised-button 
-              [ngClass]="{'green': slot['is_available'] == '1','red': slot['is_available'] == '0'}"  
-              class="btn-slot"
-              (click) = "select_slot(slot)"
-            >
-                {{slot['name']}}
-              </button>
+
+            <mat-card>
+              <mat-card-header>{{slot['name']}}</mat-card-header>
+
+              <mat-card-content>
+                <div mat-card-avatar class="example-header-image"></div>
+              </mat-card-content>
+
+              <mat-card-actions>
+                <button mat-raised-button 
+                  [ngClass]="{'green': slot['is_available'] == '1','red': slot['is_available'] == '0'}"  
+                  class=""
+                  (click) = "select_slot(slot)"
+                >
+                    Rent
+                </button>
+                
+                <button mat-raised-button
+                  class=""
+                  (click)="book_slot(slot)"
+                >Book</button>
+              </mat-card-actions>
+            </mat-card>
+
           </div>
 
         </div>
       </div>
 
-      <div class="col-md-5">
+      <div class="col-md-6">
 
         <mat-card *ngIf="selected_slot">
             <mat-card-header>
@@ -37,6 +54,27 @@
 
             <mat-card-content>
               
+              <mat-form-field class="full-width">
+                <mat-label>Vehicle No</mat-label>
+                <input matInput placeholder="Ex. XXX-4656" >
+              </mat-form-field>
+
+              <mat-form-field class="full-width">
+                <mat-label>Choose a date</mat-label>
+                <input matInput [matDatepicker]="picker">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-radio-group aria-label="Select an option" class="full-width">
+                <mat-radio-button value="1">Morning</mat-radio-button>
+                <mat-radio-button value="2">Afternoon </mat-radio-button>
+                <mat-radio-button value="3">Full Day </mat-radio-button>
+              </mat-radio-group>
+
+              <mat-card-actions style="text-align: right;">
+                <button mat-raised-button color="primary">Book</button>
+              </mat-card-actions>
             </mat-card-content>
         </mat-card>
 
