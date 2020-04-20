@@ -14,6 +14,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatRadioModule} from '@angular/material/radio';
 import { MatNativeDateModule } from '@angular/material/core';
+import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatRadioModule
+    MatRadioModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

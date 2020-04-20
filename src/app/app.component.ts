@@ -16,22 +16,26 @@ export class AppComponent implements OnInit{
       {
         "name" : "Slot 1",
         "division" : "D1",
-        "is_available" : "0"
+        "is_available" : "0",
+        "type":"car"
       },
       {
         "name" : "Slot 2",
         "division" : "D1",
-        "is_available" : "1"
+        "is_available" : "1",
+        "type":"car"
       },
       {
         "name" : "Slot 3",
         "division" : "D1",
-        "is_available" : "1"
+        "is_available" : "1",
+        "type":"bike"
       },
       {
         "name" : "Slot 4",
         "division" : "D1",
-        "is_available" : "0"
+        "is_available" : "0",
+        "type":"bike"
       }
     ];
 
@@ -43,7 +47,7 @@ export class AppComponent implements OnInit{
   }
 
   book_slot(slot) {
-    
+
   }
 
 

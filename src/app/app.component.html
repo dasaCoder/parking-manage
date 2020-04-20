@@ -1,7 +1,7 @@
 
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <span>Custom Toolbar</span>
+    <span>Parking Manager</span>
   </mat-toolbar-row>
 </mat-toolbar>
 
@@ -17,10 +17,13 @@
           <div *ngFor=" let slot of parking_slots" class="col-md-6" style="margin:5px 0">
 
             <mat-card>
-              <mat-card-header>{{slot['name']}}</mat-card-header>
+              <mat-card-header>
+                <mat-card-title>{{slot['name']}}</mat-card-title>
+              </mat-card-header>
 
-              <mat-card-content>
-                <div mat-card-avatar class="example-header-image"></div>
+              <mat-card-content style="text-align: center;">
+                <mat-icon *ngIf="slot['type'] == 'car'">directions_car</mat-icon>
+                <mat-icon *ngIf="slot['type'] == 'bike'">two_wheeler</mat-icon>
               </mat-card-content>
 
               <mat-card-actions>
@@ -35,7 +38,7 @@
                 <button mat-raised-button
                   class=""
                   (click)="book_slot(slot)"
-                >Book</button>
+                >Book</button>  
               </mat-card-actions>
             </mat-card>
 
@@ -45,6 +48,10 @@
       </div>
 
       <div class="col-md-6">
+
+        <mat-card *ngIf="!selected_slot">
+          <img mat-card-image src="../assets/img/park.jpg"/>
+        </mat-card>
 
         <mat-card *ngIf="selected_slot">
             <mat-card-header>
