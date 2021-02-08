@@ -123,5 +123,8 @@
       }
     }
   },
-  "defaultProject": "parking-manage"
+  "defaultProject": "parking-manage",
+  "cli": {
+    "analytics": "fc610f28-eb5b-4867-877c-f24cd90cb1e8"
+  }
 }

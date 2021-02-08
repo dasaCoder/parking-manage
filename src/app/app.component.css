@@ -10,7 +10,11 @@
 .red{
     background-color: red!important;
     color:#fff;
-}   
+}  
+
+.blue{
+    background-color: rgb(119, 168, 241);
+}
 
 .full-width{
     width: 100%;
@@ -18,4 +22,9 @@
 
 .mat-radio-button{
     margin-right: 5px!important;
+}
+
+.reports-btn{
+    position: absolute;
+    right: 60px;
 }

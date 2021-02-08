@@ -2,12 +2,15 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
     <span>Parking Manager</span>
+
+    <button class="reports-btn" (click)="toggle_reports()" mat-raised-button>{{reports_captions}}</button>
+
   </mat-toolbar-row>
 </mat-toolbar>
 
 <div class="container" style="padding: 20px 0;">
 
-  <mat-card>
+  <mat-card *ngIf="reports_captions == 'Reports'">
 
     <div class="row">
 
@@ -16,28 +19,31 @@
 
           <div *ngFor=" let slot of parking_slots" class="col-md-6" style="margin:5px 0">
 
-            <mat-card>
+            <mat-card [ngClass]="{'blue': slot[2] == '2'}">
               <mat-card-header>
-                <mat-card-title>{{slot['name']}}</mat-card-title>
+                <mat-card-title>{{slot[1]}}</mat-card-title>
               </mat-card-header>
 
               <mat-card-content style="text-align: center;">
-                <mat-icon *ngIf="slot['type'] == 'car'">directions_car</mat-icon>
-                <mat-icon *ngIf="slot['type'] == 'bike'">two_wheeler</mat-icon>
+                <mat-icon *ngIf="slot[3] == 'car'">directions_car</mat-icon>
+                <mat-icon *ngIf="slot[3] == 'bike'">two_wheeler</mat-icon>
               </mat-card-content>
 
               <mat-card-actions>
                 <button mat-raised-button 
-                  [ngClass]="{'green': slot['is_available'] == '1','red': slot['is_available'] == '0'}"  
+                [disabled] = "slot[2] == '2'"
+                  [ngClass]="{'green': slot[2] == '1','red': slot[2] == '0'}"  
                   class=""
-                  (click) = "select_slot(slot)"
+                  (click) = "select_slot_for_rent(slot)"
                 >
+                  
                     Rent
                 </button>
                 
                 <button mat-raised-button
+                  [disabled] = "slot[2] == '2'"
                   class=""
-                  (click)="book_slot(slot)"
+                  (click)="select_slot_for_book(slot)"
                 >Book</button>  
               </mat-card-actions>
             </mat-card>
@@ -53,41 +59,162 @@
           <img mat-card-image src="../assets/img/park.jpg"/>
         </mat-card>
 
-        <mat-card *ngIf="selected_slot">
-            <mat-card-header>
-              <mat-card-title>{{selected_slot['name']}}</mat-card-title>
-              <mat-card-subtitle>{{selected_slot['division']}}</mat-card-subtitle>
-            </mat-card-header>
+        <div *ngIf="selected_slot">
+          <mat-card *ngIf="is_for_book">
+              <mat-card-header>
+                <mat-card-title>{{selected_slot[1]}}</mat-card-title>
+                <mat-card-subtitle>{{selected_slot[2]}}</mat-card-subtitle>
+              </mat-card-header>
 
-            <mat-card-content>
+              <mat-card-content>
+                
+                <mat-form-field class="full-width">
+                  <mat-label>Vehicle No</mat-label>
+                  <input matInput [(ngModel)]="vehicle_no" placeholder="Ex. XXX-4656" >
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                  <mat-label>Choose a date</mat-label>
+                  <input matInput [matDatepicker]="picker" [(ngModel)]="date">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+
+                <mat-radio-group aria-label="Select an option" class="full-width">
+                  <!-- <mat-radio-button value="1">Morning</mat-radio-button> -->
+                  <!-- <mat-radio-button value="2">Afternoon </mat-radio-button> -->
+                  <mat-radio-button value="3">Full Day </mat-radio-button>
+                </mat-radio-group>
+
+                <mat-card-actions style="text-align: right;">
+                  <button mat-raised-button color="primary" (click)="book_slot()">Book</button>
+                </mat-card-actions>
+              </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div *ngIf="selected_slot">
+          <mat-card *ngIf="is_for_rent">
+            <div *ngIf="selected_slot[2] != 0">
+                <mat-card-header>
+                  <mat-card-title>{{selected_slot[1]}}</mat-card-title>
+                  <mat-card-subtitle>{{selected_slot[2]}}</mat-card-subtitle>
+                </mat-card-header>
+
+                <mat-card-content>
+                  
+                  <mat-form-field class="full-width">
+                    <mat-label>Vehicle No</mat-label>
+                    <input matInput [(ngModel)]="vehicle_no" placeholder="Ex. XXX-4656" >
+                  </mat-form-field>
+
+                  <mat-form-field class="full-width">
+                    <mat-label>Check In</mat-label>
+                    <input matInput [(ngModel)]="check_in" placeholder="Ex. 08:30H" >
+                  </mat-form-field>
+
               
-              <mat-form-field class="full-width">
-                <mat-label>Vehicle No</mat-label>
-                <input matInput placeholder="Ex. XXX-4656" >
-              </mat-form-field>
 
-              <mat-form-field class="full-width">
-                <mat-label>Choose a date</mat-label>
-                <input matInput [matDatepicker]="picker">
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-              </mat-form-field>
+                  <mat-card-actions style="text-align: right;">
+                    <button mat-raised-button color="primary" (click)="rent_slot()">Book</button>
+                  </mat-card-actions>
+                </mat-card-content>
+              </div>
 
-              <mat-radio-group aria-label="Select an option" class="full-width">
-                <mat-radio-button value="1">Morning</mat-radio-button>
-                <mat-radio-button value="2">Afternoon </mat-radio-button>
-                <mat-radio-button value="3">Full Day </mat-radio-button>
-              </mat-radio-group>
+              <div *ngIf="selected_slot[2] == 0">
+                <mat-card-header>
+                  <mat-card-title>{{selected_slot[1]}}</mat-card-title>
+                  <mat-card-subtitle>{{selected_slot[2]}}</mat-card-subtitle>
+                </mat-card-header>
 
-              <mat-card-actions style="text-align: right;">
-                <button mat-raised-button color="primary">Book</button>
-              </mat-card-actions>
-            </mat-card-content>
-        </mat-card>
+                <mat-card-content>
+                  
+
+                  <mat-form-field class="full-width">
+                    <mat-label>Check Out</mat-label>
+                    <input matInput [(ngModel)]="check_in" placeholder="Ex. 08:30H" >
+                  </mat-form-field>
+
+              
+
+                  <mat-card-actions style="text-align: right;">
+                    <button mat-raised-button color="primary" (click)="end_rent_slot()">Release</button>
+                  </mat-card-actions>
+                </mat-card-content>
+              </div>
+          </mat-card>
+        </div>
 
       </div>
 
     </div>
 
   </mat-card>
+
+
+
+  <!-- reports -->
+
+  <mat-card *ngIf="reports_captions == 'Home'">
+
+    <div class="row">
+      <h2>Booking Details</h2>
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Vehicle No</th>
+            <th scope="col">Date</th>
+            <th scope="col">Slot ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of bookingDataSet">
+            <th scope="row">1</th>
+            <td>{{data['vehicle_no']}}</td>
+            <td>{{data['date']}}</td>
+            <td>{{data['slot_id']}}</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </mat-card>
+
+  <hr *ngIf="reports_captions == 'Home'">
+  <div class="" *ngIf="reports_captions == 'Home'">
+    <mat-card>
+  
+      <div class="row">
+        <h2>Renting Details</h2>
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Vehicle No</th>
+              <th scope="col">Date</th>
+              <th scope="col">Slot ID</th>
+              <th scope="col">Check In</th>
+              <th scope="col">Check Out</th>
+
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let data of rentingDataSet">
+              <th scope="row">1</th>
+              <td>{{data['vehicle_no']}}</td>
+              <td>{{data['date']}}</td>
+              <td>{{data['slot_id']}}</td>
+              <td>{{data['check_in']}}</td>
+              <td>{{data['check_out']}}</td>
+            </tr>
+  
+          </tbody>
+        </table>
+      </div>
+    </mat-card>
+  </div>
 </div>
+
