@@ -19,6 +19,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import { MatNativeDateModule } from '@angular/material/core';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTableModule} from '@angular/material/table';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import {MatTableModule} from '@angular/material/table';
     MatNativeDateModule,
     MatRadioModule,
     MatIconModule,
-    MatTableModule
+    MatTableModule,
+    NgxMaterialTimepickerModule
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }

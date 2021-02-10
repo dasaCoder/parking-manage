@@ -26,5 +26,14 @@
 
 .reports-btn{
     position: absolute;
-    right: 60px;
+    right: 120px;
+}
+
+.logout-btn{
+    position: absolute;
+    right: 40px;
+}
+
+.login-div{
+    margin-top:100px;
 }

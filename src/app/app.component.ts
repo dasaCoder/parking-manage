@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import {MatTableDataSource} from '@angular/material/table';
-import { map } from 'rxjs/operators';
-import { Observable, Subject, asapScheduler, pipe, of, from, interval, merge, fromEvent } from 'rxjs';
+import { Component, OnInit, Inject } from '@angular/core';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +9,10 @@ import { Observable, Subject, asapScheduler, pipe, of, from, interval, merge, fr
 })
 export class AppComponent implements OnInit{
   title = 'parking-manage';
+
+  is_logged_in = true;
+  username = "";
+  password = "";
 
   parking_slots = {};
   selected_slot;
@@ -24,7 +26,7 @@ export class AppComponent implements OnInit{
   bookingDataSet: bookingData[] = [];
   rentingDataSet: any[] = [];
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, public dialog: MatDialog) {
 
   }
 
@@ -36,9 +38,41 @@ export class AppComponent implements OnInit{
   }
 
   set_parking_slots() {
-    this.http.get("http://localhost:5000/blocks").subscribe(result => {
+    let date = new Date();
+    let month = (date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1)) ;
+    let dateF = ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate()));
+    let formatted_date = date.getFullYear() + '-' + month + '-' + dateF;
+    this.http.get("http://localhost:5000/blocks?date="+ formatted_date).subscribe(result => {
       this.parking_slots = result;
     });
+  }
+
+  login() {
+    let requestBody = {
+      "username":this.username,
+      "password": this.password
+    }
+    this.http.post("http://localhost:5000/login", requestBody)
+      .subscribe(data=> {
+        if(data['success']) {
+          this.is_logged_in = true;
+          alert("Logged In");
+        } else {
+          alert("Error occured");
+        }
+      });
+  }
+
+  logout() {
+    this.is_logged_in = false;
+  }
+
+  openDialog(cost, time): void {
+    const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
+      width: '250px',
+      data: {cost: cost, duration: time}
+    });
+
   }
 
   select_slot_for_rent(slot) {
@@ -114,7 +148,7 @@ export class AppComponent implements OnInit{
       if(data['success']) {
         this.selected_slot = undefined;
         this.set_parking_slots();
-        alert("Slot Released");
+        this.openDialog(data['payment'], data['total_time'])
       } else {
         alert("Error occured");
       }
@@ -153,5 +187,27 @@ export interface bookingData {
   slot_id:string,
   vehicle_no:string,
   date:string
+}
+
+export interface DialogData {
+  cost: string;
+  duration: string;
+}
+
+
+@Component({
+  selector: 'dialog-overview-example-dialog',
+  templateUrl: 'dialog-overview-example-dialog.html',
+})
+export class DialogOverviewExampleDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
 }
 
